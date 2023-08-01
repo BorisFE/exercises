@@ -2,7 +2,7 @@
 
 class Statement
 {
-    public function execute($params)
+    public function executeList($params)
     {
         return [
             [
@@ -18,5 +18,20 @@ class Statement
                 'country' => 'USA',
             ],
         ];
+    }
+
+    public function executeId($id)
+    {
+        return [
+            'id' => 1,
+            'name' => 'John Doe',
+            'city' => 'London',
+            'country' => 'UK',
+        ];
+    }
+
+    public function executeCreate($id)
+    {
+        return 3;
     }
 }

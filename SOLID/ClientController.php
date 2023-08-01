@@ -25,8 +25,18 @@ class ClientController
                 throw new Exception('Invalid request');
             }
 
-            $query = 'SELECT * FROM clients WHERE city = :city OR country = :country';
-            return $this->db->prepare($query)->execute(['city' => $city, 'country' => $country]);
+            if (empty($city)) {
+                $query = 'SELECT * FROM clients WHERE country = :country';
+                return $this->db->prepare($query)->executeList(['country' => $country]);
+            }
+
+            if (empty($country)) {
+                $query = 'SELECT * FROM clients WHERE city = :city';
+                return $this->db->prepare($query)->executeList(['city' => $city]);
+            }
+
+            $query = 'SELECT * FROM clients WHERE city = :city AND country = :country';
+            return $this->db->prepare($query)->executeList(['city' => $city, 'country' => $country]);
 
         }
 
@@ -49,7 +59,7 @@ class ClientController
             }
 
             $query = 'SELECT * FROM clients WHERE id = :id';
-            return $this->db->prepare($query)->execute(['id' => $id]);
+            return $this->db->prepare($query)->executeId(['id' => $id]);
 
         }
 
@@ -69,12 +79,12 @@ class ClientController
             $city = $body['params']['city'] ?? null;
             $country = $body['params']['country'] ?? null;
 
-            if (empty($name) || empty($city) || empty($country)) {
+            if (empty($name) && empty($city) && empty($country)) {
                 throw new Exception('Invalid request');
             }
 
             $query = 'INSERT INTO clients (name, city, country) VALUES (:name, :city, :country)';
-            return $this->db->prepare($query)->execute(['name' => $name, 'city' => $city, 'country' => $country]);
+            return $this->db->prepare($query)->executeCreate(['name' => $name, 'city' => $city, 'country' => $country]);
 
         }
 
